@@ -1,45 +1,32 @@
-const Product = require('../../models/product.model')
+const Product = require("../../models/product.model");
+
+const filterStatusHelper = require("../../helpers/filterStatus");
 
 // [GET] /admin/products
 module.exports.index = async (req, res) => {
-    let filterStatus = [
-        {
-            name: "Tất cả",
-            status: "",
-            class: ""
-        },
-        {
-            name: "Hoạt động",
-            status: "active",
-            class: ""
-        },
-        {
-            name: "Không hoạt động",
-            status: "inactive",
-            class: ""
-        }
-    ]
-    if(req.query.status){
-        const index = filterStatus.findIndex(item => item.status === req.query.status)
-        filterStatus[index].class = "active"
-    }else{
-        const index = filterStatus.findIndex(item => item.status === "")
-        filterStatus[index].class = "active"
-    }
+    // bộ lọc
+    const filterStatus = filterStatusHelper(req.query);
 
+    //tìm kiếm
     let find = {
-        deleted: false
+        deleted: false,
+    };
+    if (req.query.status) {
+        find.status = req.query.status;
     }
-    if(req.query.status){
-        find.status = req.query.status
+    let keyword = "";
+    if (req.query.keyword) {
+        keyword = req.query.keyword;
+        const regex = new RegExp(keyword, "i");
+        find.title = regex;
     }
 
-    const products =  await Product.find(find)
-    console.log(products)
+    const products = await Product.find(find);
 
     res.render("admin/pages/products/index.pug", {
         titlePage: "Danh sách sản phẩm",
         products: products,
-        filterStatus: filterStatus
-    })
-}   
+        filterStatus: filterStatus,
+        keyword: keyword,
+    });
+};
