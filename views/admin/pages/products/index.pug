@@ -1,6 +1,7 @@
 extends ../../layouts/default.pug 
 include ../../mixins/filter-status.pug  
 include ../../mixins/search.pug
+include ../../mixins/pagination.pug
 
 block main 
     h1 Danh sách sản phẩm
@@ -40,12 +41,17 @@ block main
                                     if(item.status === "active")
                                         a(href="#" class="badge badge-success") Hoạt động                        
                                     else
-                                        a(href="#" class="badge badge-danger") Dừng hoạt động
-
-                                
-                                    
+                                        a(href="#" class="badge badge-danger") Dừng hoạt động                                   
                                 td
                                     button(class = "btn btn-warning btn-sm") Sửa
                                     button(class = "btn btn-danger btn-sm ml-1") Xóa
 
-        
+    
+    +pagination(pagination)
+            
+
+
+
+
+                
+                       
